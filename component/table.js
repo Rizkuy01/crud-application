@@ -1,6 +1,13 @@
-import data from '../database/data.json';
+import { useQuery } from 'react-query';
+import { getUser } from '../lib/helper';
 
 export default function table () {
+
+    const {isLoading, isError, data, error} = useQuery('user', getUser)
+
+    if(isLoading) return <div> Loading data...</div>
+    if(isError) return <div> Data Error! {error} </div>
+
     return (
         <>
         <table className='min-w-full table-auto'>
@@ -64,7 +71,7 @@ function Tr ({id, date, code, name, error, pic, solve, status}){
                         <span className='text-black'>{solve || 'unknown'}</span>
                     </td>
                     <td className="py-2">
-                        <button className="cursor" disabled><span className="bg-green-500 text-white px-5 py-1 rounded-full">{status || 'unknown'}</span></button>
+                        <button className="cursor" disabled><span className={`${status == "Resolved" ? 'bg-green-500' : 'bg-yellow-500' } text-white px-5 py-1 rounded full`}>{status || 'unknown'}</span></button>
                     </td>
                     <td className="py-2 flex justify-around text-white">
                         <button className='cursor bg-yellow-400 text-sm py-1 px-2 border rounded-full hover:border-black hover:bg-yellow-500'>edit</button>
