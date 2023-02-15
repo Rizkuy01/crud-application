@@ -13,5 +13,5 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   connectMongo()
-  res.status(200).json({ name: 'John Doe' })
+  res.status(200).json({ name: 'John Chena' })
 }

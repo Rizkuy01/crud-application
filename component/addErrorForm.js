@@ -1,23 +1,35 @@
 import { useReducer } from 'react'
 import Alert from './alert'
+import { useQueryClient, useMutation } from 'react-query'
+import { addUser, getUsers } from '../lib/helper'
 
-const formReducer = (state, event) => {
-    return {
-        ...state,
-        [event.target.name]: event.target.value
+
+
+export default function AddErrorForm(formData, setFormData) {
+
+    const queryClient = useQueryClient()
+    const addMutation = useMutation(addUser, {
+    onSuccess: ()=> {
+        console.log('success')
+        queryClient.prefetchQuery('user', getUsers)
     }
-}
+})
 
-export default function AddErrorForm() {
-
-    const [formData, setFormData] = useReducer(formReducer, {})
     const handleSubmit = (e) => {
         e.preventDefault()
         if(Object.keys(formData).length === 0) return console.log('data is empty');
-        console.log(formData)
+        let {date, code, name, error, pic, solve, status} = formData;
+
+        const model = {
+            date, code, name, error, pic, solve, status : status ?? "Resolved"
+        }
+
+        addMutation.mutate(model)
+
     }
 
-    if(Object.keys(formData).length > 0) return <Alert></Alert>
+    // if(Object.keys(formData).length > 0) return <Alert></Alert>
+    if(addMutation.isLoading) return <div className='flex justify-center mx-auto border border-green-300 bg-green-400 w-3/6 text-gray-900 text-md my-4 py-2 text-ceneter bg-opacity-25'>Loading...</div>
 
     return (
         <>
@@ -43,8 +55,6 @@ export default function AddErrorForm() {
                         <label htmlFor='Default1' className='p-1 mt-1 text-sm inline-block'>Resolved</label>
                         <input type='radio' onChange={setFormData} name='status' value='Reject' id='Default2' className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-500 bg-white checked:bg-red-600 checked:border-yellow-500 focus:outline-none transition duration-150 mt-1 align-top bg-no-repeat bg-center bg-contain float-left ml-2 cursor-pointer'/>
                         <label htmlFor='Default2' className='p-1 mt-1 text-sm inline-block'>Reject</label>
-                        <input type='radio' onChange={setFormData} name='status' value='Complain' id='Default3' className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-500 bg-white checked:bg-yellow-500 checked:border-yellow-500 focus:outline-none transition duration-150 mt-1 align-top bg-no-repeat bg-center bg-contain float-left ml-2 cursor-pointer'/>
-                        <label htmlFor='Default3' className='p-1 mt-1 text-sm inline-block'>Complain</label>
                     </div>
                 </div>
                 

@@ -3,13 +3,18 @@ import Head from 'next/head'
 import { FiPlusCircle } from 'react-icons/fi'
 import Form from 'component/form'
 import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { toogleChangeAction } from '../redux/reducer'
+
 
 export default function Home() {
 
-  const [visible, setVisible] = useState(false);
+  const visible = useSelector((state) => state.app.client.toogleForm)
+  const dispatch = useDispatch();
 
   const handler = () => {
-    setVisible(true);
+    dispatch(toogleChangeAction());
+    console.log('clicked')
   };
 
   return (
