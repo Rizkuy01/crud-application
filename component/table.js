@@ -1,14 +1,15 @@
 import { useQuery } from 'react-query';
 import { getUsers } from '../lib/helper';
 import { useSelector, useDispatch } from 'react-redux';
-import { toogleChangeAction } from '../redux/reducer'
+import { toogleChangeAction, updateAction, deleteAction } from '../redux/reducer';
+import data from '../database/data.json'
 
 export default function table () {
 
     
     // console.log(state);
 
-    const {isLoading, isError, data, error} = useQuery('user', getUsers)
+    const { isLoading, isError, error } = useQuery('users', getUsers)
 
     if(isLoading) return <div className='flex justify-center mx-auto border border-red-300 bg-red-400 w-3/6 text-gray-900 text-md my-4 py-2 text-ceneter bg-opacity-25'> Loading data...</div>
     if(isError) return <div className='flex justify-center mx-auto border border-green-300 bg-green-400 w-3/6 text-gray-900 text-md my-4 py-2 text-ceneter bg-opacity-25'> Data Error! {error} </div>
@@ -60,10 +61,16 @@ function Tr ({id, date, code, name, error, pic, solve, status}){
     const dispatch = useDispatch()
 
     const onUpdate = () =>{
-        dispatch(toogleChangeAction())
+        dispatch(toogleChangeAction(id))
         console.log(visible)
         if(visible){
             dispatch(toogleChangeAction(id))
+        }
+    }
+
+    const onDelete = () =>{
+        if(!visible){
+            dispatch(deleteAction(id))
         }
     }
 
@@ -92,7 +99,7 @@ function Tr ({id, date, code, name, error, pic, solve, status}){
                     </td>
                     <td className="py-2 flex justify-around text-white">
                         <button onClick={onUpdate} className='cursor bg-yellow-400 text-sm py-1 px-2 border rounded-full hover:border-black hover:bg-yellow-500'>edit</button>
-                        <button className='cursor bg-red-600 text-sm py-1 px-2 border rounded-full hover:border-black hover:bg-red-700'>delete</button>
+                        <button  onclick={onDelete} className='cursor bg-red-600 text-sm py-1 px-2 border rounded-full hover:border-black hover:bg-red-700'>delete</button>
                     </td>
                 </tr>
     )

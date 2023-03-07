@@ -11,7 +11,7 @@ export default function AddErrorForm(formData, setFormData) {
     const addMutation = useMutation(addUser, {
     onSuccess: ()=> {
         console.log('success')
-        queryClient.prefetchQuery('user', getUsers)
+        queryClient.prefetchQuery('users', getUsers)
     }
 })
 

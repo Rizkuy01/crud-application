@@ -3,10 +3,10 @@
 import User from '../model/user'
 
 
-// get http:/localhost:3000/api/user
-export async function getUser(req, res){
+// get http:/localhost:3000/api/users
+export async function getUsers(req, res){
     try {
-        const users = await User.find({})
+        const users = await Users.find({})
 
         if(!users) return res.status(404).json({error: 'data not found'})
         res.status(200).json(users);
@@ -15,12 +15,13 @@ export async function getUser(req, res){
     }
 }
 
-export async function getUsers(req, res){
+// get : http://localhost:3000/api/users/1
+export async function getUser(req, res){
     try{
-        const userId = req.query;
+        const {userId} = req.query;
 
         if(userId){
-            const User = await User.findById(userId);
+            const user = await Users.findById(userId);
             res.status(200).json(User);
         }
         res.status(404).json({error:"data not found"});
@@ -29,12 +30,12 @@ export async function getUsers(req, res){
     }
 }
 
-// post http:/localhost:3000/api/user
-
+// post http:/localhost:3000/api/users
 export async function postUser(req, res){
     try {
         const formData = req.body;
-        User.create(formData, function(err, data) {
+        if(!formData) return res.status(404).json({error: 'Form Data not Provided'});
+        Users.create( formData, function(err, data) {
             return res.status(200).json(data);
         })
     } catch (error) {
@@ -64,11 +65,11 @@ export async function deleteUser(req, res){
         const {userId} = req.query;
 
         if(userId){
-            const user = await User.findByIdAndRemove(userId);
-            return res.status(200).json({deleted: userId});
+            const user = await Users.findByIdAndRemove(userId);
+            return res.status(200).json(user);
         }
         res.status(404).json({error:"data not found"});
         } catch (error) {
-            return res.status(404).json({error: 'error while deleting data'})
+            res.status(404).json({error: 'error while deleting data'})
         }
     }

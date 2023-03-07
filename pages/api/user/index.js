@@ -1,14 +1,15 @@
 import connectMongo from "../../../database/connect"
-import { getUser, postUser, putUser, deleteUser } from "../../../database/controller"
+import { getUsers, postUser, putUser, deleteUser } from "../../../database/controller"
 
 export default async function handler(req,res) {
     connectMongo().catch(()=>res.status(405).json({error: 'error in the connection'}))
 
+    //type of request
     const {method} = req
 
     switch (method){
         case 'GET':
-            getUser(req, res)
+            getUsers(req, res)
             break;
         case 'POST':
             postUser(req, res)

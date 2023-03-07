@@ -4,6 +4,7 @@ import { getUser, putUser, deleteUser } from "../../../database/controller"
 export default async function handler(req,res) {
     connectMongo().catch(()=>res.status(405).json({error: 'error in the connection'}))
 
+    //type of request
     const {method} = req
 
     switch (method) {

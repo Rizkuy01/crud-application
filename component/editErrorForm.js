@@ -1,23 +1,34 @@
 import { useReducer } from 'react'
 import Alert from './alert'
-import { useQuery } from 'react-query'
-import { getUser } from '../lib/helper'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { getUser, getUsers, updateUser } from '../lib/helper'
 
 
 
-export default function EditErrorForm(formId, formData, setFormData) {
+export default function EditErrorForm({formId, formData, setFormData}) {
 
-    const {isLoading, isError, data} = useQuery(['user', formId], () => getUser(formId))
+    const queryClient = getQueryClient()
+    const {isLoading, isError, data} = useQuery(['users', formId], () => getUser(formId))
+    const updataMutation = useMutation((newData) => updateUser(formId, newData), {
+        onSuccess : async (data) => {
+            // queryClient.setQueryData('users', (old) => [data])
+            queryClient.prefetchQuery('users', getUsers)
+        }
+    })
+
+    if(isLoading) return <Alert>Loading</Alert>
+    if(isError) return <Alert>Error</Alert>
 
     const {date, error, status, code, pic, name, solve} = data;
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if(Object.keys(formData).length === 0) return console.log('data isLoading empty');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        let updated = Object.assign({}, data, formData)
+        await UpdateMutation.mutate(updated)
+        // if(Object.keys(formData).length === 0) return console.log('data isLoading empty');
         console.log(formData)
     }
 
-    if(isLoading) return <Alert>Loading</Alert>
 
     return (
         <>

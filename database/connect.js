@@ -1,8 +1,8 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const connectMongo = async()=> {
+const connectMongo = async ()=> {
     try {
-        const{connection} = await mongoose.connect(process.env.MONGO_URI)
+        const{ connection } = await mongoose.connect(process.env.MONGO_URI)
         if (connection.readyState==1){
             console.log("Connected to MongoDB")
         }

@@ -4,18 +4,36 @@ import { FiPlusCircle } from 'react-icons/fi'
 import Form from 'component/form'
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { toogleChangeAction } from '../redux/reducer'
+import { toogleChangeAction, deleteAction } from '../redux/reducer'
+import {deleteUser, getUsers} from '../lib/helper';
+import { useQueryClient } from 'react-query';
 
 
 export default function Home() {
 
   const visible = useSelector((state) => state.app.client.toogleForm)
+  const deleteId = useSelector(state => state.app.client.deleteId)
+  const queryclient = useQueryClient();
+
   const dispatch = useDispatch();
 
   const handler = () => {
     dispatch(toogleChangeAction());
     console.log('clicked')
   };
+
+  const deletehandmler = async () => {
+    if(deleteId) {
+      await deleteUser(deleteId);
+      await queryclient.prefetchQuery('users', getUsers)
+      await dispatch(deleteAction(null))
+    }
+  }
+
+  const cancelhandler = async () => {
+    console.log("cancel")
+    await dispatch(deleteAction(null));
+  }
 
   return (
     <section>
@@ -34,6 +52,7 @@ export default function Home() {
             Add data<span className='px-1'><FiPlusCircle size={20} className='inline-block my-1'></FiPlusCircle></span>
           </button>
         </div>
+        { deleteId ? DeleteComponent({deletehandler, cancelhandler}) : <></>}
       </div>
 
         {/* Form */}
@@ -48,5 +67,15 @@ export default function Home() {
     </div>
     </main>
     </section>
+  )
+}
+
+function DeleteComponent({ deletehandler, cancelhandler}){
+  return (
+    <div className='flex gap-5'>
+      <button>sure?</button>
+      <button onClick={deletehandler} className='flex bg-red-500 text-white px-4 py-2 border rounded-md hover:bg-rose-500 hover:text-gray-50'>yes</button>
+      <button onClick={cancelhandler} className='flex bg-yellow-500 text-white px-4 py-2 border rounded-md hover:bg-rose-500 hover:text-gray-50'>no</button>
+    </div>
   )
 }
